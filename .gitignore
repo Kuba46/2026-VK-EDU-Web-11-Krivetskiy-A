@@ -60,6 +60,7 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+*sqlite3
 
 # Flask stuff:
 instance/
@@ -211,3 +212,16 @@ __marimo__/
 
 .DS_Store
 Thumbs.db
+
+.DS_Store
+*.log
+
+media
+
+application
+core
+questions
+.env.example
+manage.py
+requirements.txt
+templates
