@@ -53,7 +53,7 @@ def _build_questions():
         'img/Berdly_sprite.png',
     ]
 
-    for i in range(4, 31):
+    for i in range(4, 25):
         first_tag, second_tag = tags_cycle[i % len(tags_cycle)]
         questions.append(
             {
