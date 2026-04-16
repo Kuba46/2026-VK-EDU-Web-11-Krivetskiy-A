@@ -53,13 +53,13 @@ def _build_questions():
         'img/Berdly_sprite.png',
     ]
 
-    for i in range(4, 25):
+    for i in range(4, 31):
         first_tag, second_tag = tags_cycle[i % len(tags_cycle)]
         questions.append(
             {
                 'id': i,
-                'title': f'Deltarune question #{i}',
-                'text': f'This is placeholder text for question {i}. Later this data will come from the database.',
+                'title': f'Question #{i}',
+                'text': "question's text",
                 'tags': [first_tag, second_tag],
                 'answers_count': (i % 7) + 1,
                 'votes': (i * 3) % 25,

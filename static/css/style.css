@@ -229,6 +229,13 @@ aside .card {
     box-shadow: 0 0 10px rgba(141, 92, 255, 0.4);
 }
 
+aside .card .card-body,
+aside .card .card-body h5,
+aside .card .card-body a {
+    font-family: "8bitoperator JVE", monospace;
+    letter-spacing: 0.02em;
+}
+
 
 .badge {
     border-radius: 0;
