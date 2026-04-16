@@ -225,3 +225,4 @@ questions
 manage.py
 requirements.txt
 templates
+static

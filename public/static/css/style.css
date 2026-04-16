@@ -65,7 +65,7 @@ body {
         radial-gradient(circle at top, #1d0039, #000000);
     background-size: 32px 32px, 32px 32px, auto;
     color: var(--text);
-    font-family: Arial, sans-serif;
+    font-family: "8bitoperator JVE", monospace;
 }
 
 
