@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Ask — Deltarune Forum{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Ask a Question</h2>
+<div class="card">
+    <div class="card-body">
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-control" placeholder="Enter a short and clear title">
+                <div class="form-text">Max 100 characters</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Question</label>
+                <textarea class="form-control" rows="5" placeholder="Describe your problem in detail"></textarea>
+                <div class="form-text">Provide as much detail as possible</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tags</label>
+                <input type="text" class="form-control" placeholder="e.g. deltarune lore chapter2">
+            </div>
+            <button class="btn btn-success">Ask Question</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

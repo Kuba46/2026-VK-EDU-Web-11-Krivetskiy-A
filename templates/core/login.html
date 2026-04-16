@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Login — Deltarune Forum{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Login</h2>
+<div class="card">
+    <div class="card-body">
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" placeholder="Enter your email">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" placeholder="Enter your password">
+            </div>
+            <button class="btn btn-primary w-100 mb-3">Login</button>
+            <div class="text-center">
+                <span class="auth-prompt">Don't have an account?</span>
+                <a class="auth-prompt" href="{% url 'signup' %}">Sign up</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

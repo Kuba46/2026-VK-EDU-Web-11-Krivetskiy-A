@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Profile — Deltarune Forum{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Profile Settings</h2>
+<div class="card">
+    <div class="card-body">
+        <form>
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <img src="{% static 'img/Kris_sprite.png' %}" class="rounded-circle mb-3" width="120" height="120" alt="Avatar">
+                    <input type="file" class="form-control">
+                </div>
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" value="User123">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" value="user@email.com">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Repeat Password</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <button class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -192,6 +192,18 @@ footer .text-muted {
 
 .card h5 a {
     color: #55d7ff;
+    font-family: "8bitoperator JVE", monospace !important;
+    letter-spacing: 0.02em;
+}
+
+.question-title {
+    font-family: "8bitoperator JVE", monospace !important;
+    letter-spacing: 0.02em;
+}
+
+.page-title {
+    font-family: "8bitoperator JVE", monospace !important;
+    letter-spacing: 0.02em;
 }
 
 .card h5 a:hover {

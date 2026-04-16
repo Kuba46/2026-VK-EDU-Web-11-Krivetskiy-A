@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} — Deltarune Forum{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 page-title">{{ page_title }}</h2>
+{% for question in questions %}
+    {% include "includes/question_card.html" with question=question %}
+{% empty %}
+    <div class="card">
+        <div class="card-body">No hot questions yet.</div>
+    </div>
+{% endfor %}
+
+{% include "includes/pagination.html" with page_obj=page_obj %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Tag: {{ selected_tag }} — Deltarune Forum{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Tag: {{ selected_tag }}</h2>
+{% for question in questions %}
+    {% include "includes/question_card.html" with question=question %}
+{% empty %}
+    <div class="card">
+        <div class="card-body">No questions found for this tag.</div>
+    </div>
+{% endfor %}
+
+{% include "includes/pagination.html" with page_obj=page_obj %}
+{% endblock %}

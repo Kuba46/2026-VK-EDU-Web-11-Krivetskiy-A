@@ -217,11 +217,4 @@ Thumbs.db
 *.log
 
 media
-
-application
-core
-questions
-.env.example
-manage.py
-requirements.txt
-templates
+staticfiles/
