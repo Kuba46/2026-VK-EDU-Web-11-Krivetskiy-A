@@ -7,7 +7,7 @@
 {% for question in questions %}
     {% include "includes/question_card.html" with question=question %}
 {% empty %}
-    <div class="card">
+    <div class="card" style="margin-bottom: 7px;">
         <div class="card-body">No questions found.</div>
     </div>
 {% endfor %}
