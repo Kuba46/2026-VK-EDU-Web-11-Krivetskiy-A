@@ -6,28 +6,43 @@
 <h2 class="mb-4">Sign Up</h2>
 <div class="card">
     <div class="card-body">
-        <form>
+        <form method="post" action="{% url 'signup' %}">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             <div class="mb-3">
-                <label class="form-label">Username</label>
-                <input type="text" class="form-control" placeholder="Enter username">
+                <label class="form-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" class="form-control{% if form.username.errors %} is-invalid{% endif %}" value="{{ form.username.value|default:'' }}" required>
+                {% for error in form.username.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-control" placeholder="Enter email">
+                <label class="form-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" class="form-control{% if form.email.errors %} is-invalid{% endif %}" value="{{ form.email.value|default:'' }}" required>
+                {% for error in form.email.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-control">
+                <label class="form-label" for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                <input type="text" name="{{ form.first_name.name }}" id="{{ form.first_name.id_for_label }}" class="form-control{% if form.first_name.errors %} is-invalid{% endif %}" value="{{ form.first_name.value|default:'' }}" required>
+                {% for error in form.first_name.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="mb-3">
-                <label class="form-label">Repeat password</label>
-                <input type="password" class="form-control">
+                <label class="form-label" for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                <input type="password" name="{{ form.password1.name }}" id="{{ form.password1.id_for_label }}" class="form-control{% if form.password1.errors %} is-invalid{% endif %}" required>
+                {% for error in form.password1.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="mb-3">
-                <label class="form-label">Avatar</label>
-                <input type="file" class="form-control">
+                <label class="form-label" for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                <input type="password" name="{{ form.password2.name }}" id="{{ form.password2.id_for_label }}" class="form-control{% if form.password2.errors %} is-invalid{% endif %}" required>
+                {% for error in form.password2.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
-            <button class="btn btn-success w-100 mb-3">Create account</button>
+            <button type="submit" class="btn btn-success w-100 mb-3">Create account</button>
             <div class="text-center">
                 <span class="auth-prompt">Already have an account?</span>
                 <a class="auth-prompt" href="{% url 'login' %}">Login</a>

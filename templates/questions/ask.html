@@ -6,22 +6,34 @@
 <h2 class="mb-4">Ask a Question</h2>
 <div class="card">
     <div class="card-body">
-        <form>
+        <form method="post" action="{% url 'ask' %}">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             <div class="mb-3">
-                <label class="form-label">Title</label>
-                <input type="text" class="form-control" placeholder="Enter a short and clear title">
-                <div class="form-text">Max 100 characters</div>
+                <label class="form-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+                <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" class="form-control{% if form.title.errors %} is-invalid{% endif %}" placeholder="Enter a short and clear title" value="{{ form.title.value|default:'' }}" required>
+                {% for error in form.title.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="mb-3">
-                <label class="form-label">Question</label>
-                <textarea class="form-control" rows="5" placeholder="Describe your problem in detail"></textarea>
-                <div class="form-text">Provide as much detail as possible</div>
+                <label class="form-label" for="{{ form.text.id_for_label }}">{{ form.text.label }}</label>
+                <textarea name="{{ form.text.name }}" id="{{ form.text.id_for_label }}" class="form-control{% if form.text.errors %} is-invalid{% endif %}" rows="5" placeholder="Describe your problem in detail" required>{{ form.text.value|default:'' }}</textarea>
+                {% for error in form.text.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="mb-3">
-                <label class="form-label">Tags</label>
-                <input type="text" class="form-control" placeholder="e.g. deltarune lore chapter2">
+                <label class="form-label" for="{{ form.tags.id_for_label }}">{{ form.tags.label }}</label>
+                <input type="text" name="{{ form.tags.name }}" id="{{ form.tags.id_for_label }}" class="form-control{% if form.tags.errors %} is-invalid{% endif %}" placeholder="e.g. deltarune lore chapter2" value="{{ form.tags.value|default:'' }}" required>
+                {% for error in form.tags.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                <div class="form-text">{{ form.tags.help_text }}</div>
             </div>
-            <button class="btn btn-success">Ask Question</button>
+            <button type="submit" class="btn btn-success">Ask Question</button>
         </form>
     </div>
 </div>

@@ -16,9 +16,9 @@
                 <small class="text-muted">Author: {{ question.author.username }}</small>
                 <div>
                     <span class="me-3">Answers: {{ question.answers_count }}</span>
-                    <button class="btn btn-sm btn-outline-success">▲</button>
+                    <button class="btn btn-sm btn-outline-success" {% if not user.is_authenticated %}disabled title="Log in to vote."{% endif %}>▲</button>
                     <span class="mx-1">{{ question.rating }}</span>
-                    <button class="btn btn-sm btn-outline-danger">▼</button>
+                    <button class="btn btn-sm btn-outline-danger" {% if not user.is_authenticated %}disabled title="Log in to vote."{% endif %}>▼</button>
                 </div>
             </div>
         </div>
