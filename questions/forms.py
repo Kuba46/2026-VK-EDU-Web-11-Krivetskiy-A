@@ -1,6 +1,7 @@
 import re
 
 from django import forms
+from django.utils.text import slugify
 
 from .models import Answer, Question, Tag
 
@@ -18,7 +19,7 @@ class QuestionCreateForm(forms.ModelForm):
 
     def clean_tags(self):
         raw_tags = self.cleaned_data['tags']
-        tags = [item.strip().lower() for item in re.split(r'[,\s]+', raw_tags) if item.strip()]
+        tags = [slugify(item.strip()) for item in re.split(r'[,\s]+', raw_tags) if item.strip()]
         if not tags:
             raise forms.ValidationError('Please provide at least one tag.')
         if len(tags) > 10:
@@ -30,7 +31,7 @@ class QuestionCreateForm(forms.ModelForm):
         question.author = author
         if commit:
             question.save()
-            tag_objects = [Tag.objects.get_or_create(name=tag_name)[0] for tag_name in self.cleaned_data['tags']]
+            tag_objects = [Tag.objects.get_or_create(slug=tag_name)[0] for tag_name in self.cleaned_data['tags']]
             question.tags.set(tag_objects)
         return question
 

@@ -2,7 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from .models import Answer, AnswerLike, Profile, Question, QuestionLike, Tag
+from .models import Answer, AnswerLike, Question, QuestionLike, Tag
+
+
+from core.models import Profile
 
 
 class ProfileInline(admin.StackedInline):
@@ -27,10 +30,10 @@ class AnswerInline(admin.TabularInline):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-	list_display = ('id', 'name')
-	list_filter = ('name',)
-	search_fields = ('name',)
-	ordering = ('name',)
+	list_display = ('id', 'slug')
+	list_filter = ('slug',)
+	search_fields = ('slug',)
+	ordering = ('slug',)
 
 
 @admin.register(Question)
@@ -77,17 +80,6 @@ class AnswerLikeAdmin(admin.ModelAdmin):
 
 	def get_queryset(self, request):
 		return super().get_queryset(request).select_related('user', 'answer')
-
-
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-	list_display = ('id', 'user', 'avatar')
-	list_filter = ('avatar',)
-	search_fields = ('user__username', 'avatar')
-	raw_id_fields = ('user',)
-
-	def get_queryset(self, request):
-		return super().get_queryset(request).select_related('user')
 
 
 admin.site.unregister(User)

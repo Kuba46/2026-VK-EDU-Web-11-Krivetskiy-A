@@ -3,10 +3,12 @@ from time import time
 
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
+from django.db.models import Sum
 
 from faker import Faker
 
-from questions.models import Answer, AnswerLike, Profile, Question, QuestionLike, Tag
+from core.models import Profile
+from questions.models import Answer, AnswerLike, Question, QuestionLike, Tag
 
 
 class Command(BaseCommand):
@@ -56,6 +58,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.NOTICE(f'Creating likes: {likes_to_create}'))
         self._create_likes(likes_to_create, user_ids, question_ids, answer_ids)
+        self._recalculate_ratings()
 
         self.stdout.write(self.style.SUCCESS('Database has been successfully filled.'))
 
@@ -79,7 +82,7 @@ class Command(BaseCommand):
             User.objects.bulk_create(batch, batch_size=batch_size)
 
         new_user_ids = list(User.objects.filter(username__startswith=prefix).values_list('id', flat=True))
-        profile_batch = [Profile(user_id=user_id, avatar='img/Kris_sprite.png') for user_id in new_user_ids]
+        profile_batch = [Profile(user_id=user_id) for user_id in new_user_ids]
         Profile.objects.bulk_create(profile_batch, batch_size=batch_size, ignore_conflicts=True)
 
     def _create_tags(self, faker, amount, prefix, batch_size=5000):
@@ -200,3 +203,24 @@ class Command(BaseCommand):
 
         if answer_likes_batch:
             AnswerLike.objects.bulk_create(answer_likes_batch, batch_size=batch_size, ignore_conflicts=True)
+
+    def _recalculate_ratings(self, batch_size=5000):
+        question_totals = QuestionLike.objects.values('question_id').annotate(total=Sum('value'))
+        question_map = {row['question_id']: row['total'] or 0 for row in question_totals}
+        question_ids = list(question_map.keys())
+        for start in range(0, len(question_ids), batch_size):
+            chunk_ids = question_ids[start:start + batch_size]
+            questions = list(Question.objects.filter(id__in=chunk_ids))
+            for question in questions:
+                question.rating = question_map.get(question.id, 0)
+            Question.objects.bulk_update(questions, ['rating'], batch_size=batch_size)
+
+        answer_totals = AnswerLike.objects.values('answer_id').annotate(total=Sum('value'))
+        answer_map = {row['answer_id']: row['total'] or 0 for row in answer_totals}
+        answer_ids = list(answer_map.keys())
+        for start in range(0, len(answer_ids), batch_size):
+            chunk_ids = answer_ids[start:start + batch_size]
+            answers = list(Answer.objects.filter(id__in=chunk_ids))
+            for answer in answers:
+                answer.rating = answer_map.get(answer.id, 0)
+            Answer.objects.bulk_update(answers, ['rating'], batch_size=batch_size)

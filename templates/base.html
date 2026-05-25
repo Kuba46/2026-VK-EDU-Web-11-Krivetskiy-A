@@ -21,7 +21,13 @@
                 {% endblock %}
                 {% block header_actions %}
                 <div class="d-flex gap-2">
-                    <a href="{% url 'hot' %}" class="btn btn-outline-primary btn-sm">Hot</a>
+                    {% if 'hot' in request.path %}
+                        <a href="{% url 'index' %}" class="btn btn-outline-primary btn-sm">← New</a>
+                        <span class="btn btn-primary btn-sm" disabled>Hot</span>
+                    {% else %}
+                        <span class="btn btn-primary btn-sm" disabled>New</span>
+                        <a href="{% url 'hot' %}" class="btn btn-outline-primary btn-sm">Hot →</a>
+                    {% endif %}
                     {% if user.is_authenticated %}
                         <a href="{% url 'ask' %}" class="btn btn-success btn-sm">Ask</a>
                         <a href="{% url 'profile' %}" class="btn btn-outline-light btn-sm">{{ user.username }}</a>
@@ -51,9 +57,13 @@
                         <div class="card-body">
                             <h5>Popular tags</h5>
                             <div>
-                                <a href="{% url 'tag' 'deltarune' %}" class="badge bg-primary text-decoration-none">deltarune</a>
-                                <a href="{% url 'tag' 'combat' %}" class="badge bg-secondary text-decoration-none">combat</a>
-                                <a href="{% url 'tag' 'lore' %}" class="badge bg-success text-decoration-none">lore</a>
+                                {% if popular_tags %}
+                                    {% for tag in popular_tags %}
+                                        <a href="{% url 'tag' tag.slug %}" class="badge bg-primary text-decoration-none">{{ tag.slug }}</a>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-muted">No tags yet.</p>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

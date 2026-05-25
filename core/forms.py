@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-from questions.models import Profile
+from .models import Profile
 
 
 User = get_user_model()
@@ -47,7 +47,7 @@ class ProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         profile, _ = Profile.objects.get_or_create(user=self.instance)
-        self.fields['avatar'].initial = profile.avatar
+        self.fields['avatar'].initial = profile.avatar_url
 
     def clean_username(self):
         username = self.cleaned_data['username']

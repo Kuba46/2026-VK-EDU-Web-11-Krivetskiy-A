@@ -1,8 +1,6 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from django.db.models import Count
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.urls import reverse
 
 
@@ -20,7 +18,7 @@ class QuestionQuerySet(models.QuerySet):
 		return self.with_related().with_answers_count().order_by('-rating', '-created_at')
 
 	def by_tag(self, tag_name):
-		return self.filter(tags__name__iexact=tag_name).new()
+		return self.filter(tags__slug__iexact=tag_name).new()
 
 
 class QuestionManager(models.Manager):
@@ -37,34 +35,22 @@ class QuestionManager(models.Manager):
 		return self.get_queryset().by_tag(tag_name)
 
 
-class Profile(models.Model):
-	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name='Пользователь')
-	avatar = models.CharField(max_length=255, blank=True, default='img/Kris_sprite.png', verbose_name='Путь к аватару')
-
-	class Meta:
-		verbose_name = 'Профиль'
-		verbose_name_plural = 'Профили'
-
-	def __str__(self):
-		return self.user.username
-
-
 class Tag(models.Model):
-	name = models.CharField(max_length=64, unique=True, db_index=True, verbose_name='Название')
+	slug = models.SlugField(max_length=64, unique=True, db_index=True, verbose_name='Слаг')
 
 	class Meta:
 		verbose_name = 'Тег'
 		verbose_name_plural = 'Теги'
 
 	def __str__(self):
-		return self.name
+		return self.slug
 
 
 class Question(models.Model):
 	title = models.CharField(max_length=255, verbose_name='Заголовок')
-	text = models.TextField(verbose_name='Текст')
-	author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions', verbose_name='Автор')
-	tags = models.ManyToManyField(Tag, related_name='questions', verbose_name='Теги')
+	text = models.TextField(max_length=4000, verbose_name='Текст')
+	author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='questions', verbose_name='Автор')
+	tags = models.ManyToManyField('questions.Tag', related_name='questions', verbose_name='Теги')
 	rating = models.IntegerField(default=0, db_index=True, verbose_name='Рейтинг')
 	created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания')
 
@@ -83,9 +69,9 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
-	question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers', verbose_name='Вопрос')
-	author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answers', verbose_name='Автор')
-	text = models.TextField(verbose_name='Текст')
+	question = models.ForeignKey('questions.Question', on_delete=models.CASCADE, related_name='answers', verbose_name='Вопрос')
+	author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='answers', verbose_name='Автор')
+	text = models.TextField(max_length=4000, verbose_name='Текст')
 	rating = models.IntegerField(default=0, db_index=True, verbose_name='Рейтинг')
 	is_correct = models.BooleanField(default=False, verbose_name='Правильный')
 	created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата создания')
@@ -100,8 +86,8 @@ class Answer(models.Model):
 
 
 class QuestionLike(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='question_likes', verbose_name='Пользователь')
-	question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='likes', verbose_name='Вопрос')
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='question_likes', verbose_name='Пользователь')
+	question = models.ForeignKey('questions.Question', on_delete=models.CASCADE, related_name='likes', verbose_name='Вопрос')
 	value = models.SmallIntegerField(default=1, verbose_name='Значение')
 	created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
@@ -117,8 +103,8 @@ class QuestionLike(models.Model):
 
 
 class AnswerLike(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answer_likes', verbose_name='Пользователь')
-	answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='likes', verbose_name='Ответ')
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='answer_likes', verbose_name='Пользователь')
+	answer = models.ForeignKey('questions.Answer', on_delete=models.CASCADE, related_name='likes', verbose_name='Ответ')
 	value = models.SmallIntegerField(default=1, verbose_name='Значение')
 	created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
@@ -131,15 +117,3 @@ class AnswerLike(models.Model):
 
 	def __str__(self):
 		return f'{self.user_id} -> A{self.answer_id}'
-
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-	if created:
-		Profile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-	if hasattr(instance, 'profile'):
-		instance.profile.save()

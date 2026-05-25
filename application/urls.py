@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from core.views import error_403, error_404, error_500
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,3 +27,9 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += [path('__debug__/', include('debug_toolbar.urls'))]
+
+# Обработчики ошибок
+
+handler403 = error_403
+handler404 = error_404
+handler500 = error_500

@@ -11,7 +11,8 @@ from .utils import paginate
 
 def _render_questions(request, queryset, template_name, context):
     page = paginate(queryset, request, per_page=10)
-    return render(request, template_name, {**context, 'questions': page.object_list, 'page_obj': page})
+    popular_tags = Tag.objects.all()[:10]
+    return render(request, template_name, {**context, 'questions': page.object_list, 'page_obj': page, 'popular_tags': popular_tags})
 
 
 def index(request):
@@ -23,12 +24,12 @@ def hot(request):
 
 
 def tag(request, tag):
-    selected_tag = get_object_or_404(Tag, name__iexact=tag)
+    selected_tag = get_object_or_404(Tag, slug__iexact=tag)
     return _render_questions(
         request,
-        Question.objects.by_tag(selected_tag.name),
+        Question.objects.by_tag(selected_tag.slug),
         'questions/tag.html',
-        {'selected_tag': selected_tag.name},
+        {'selected_tag': selected_tag.slug},
     )
 
 

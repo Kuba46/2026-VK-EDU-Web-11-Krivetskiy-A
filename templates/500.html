@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error – Deltarune Forum{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">500 – Internal Server Error</h4>
+    <p>Something went wrong on our end. Please try again later.</p>
+    <hr>
+    <a href="{% url 'index' %}" class="btn btn-primary">Back to Home</a>
+</div>
+{% endblock %}
