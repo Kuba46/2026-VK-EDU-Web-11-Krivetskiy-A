@@ -1,0 +1,7 @@
+# Вставь сюда вывод ab/wrk для 5 измерений:
+# 1) nginx static
+# 2) gunicorn static
+# 3) gunicorn dynamic
+# 4) nginx -> gunicorn dynamic
+# 5) nginx -> gunicorn dynamic + proxy_cache
+
