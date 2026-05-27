@@ -38,7 +38,7 @@ class SignupForm(UserCreationForm):
 
 
 class ProfileForm(forms.ModelForm):
-    avatar = forms.CharField(label='Avatar', required=False, disabled=True)
+    avatar = forms.ImageField(label='Avatar', required=False)
 
     class Meta:
         model = User
@@ -46,8 +46,23 @@ class ProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        profile, _ = Profile.objects.get_or_create(user=self.instance)
-        self.fields['avatar'].initial = profile.avatar
+        Profile.objects.get_or_create(user=self.instance)
+
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get('avatar')
+        if not avatar:
+            return avatar
+
+        max_size_bytes = 2 * 1024 * 1024
+        if avatar.size > max_size_bytes:
+            raise forms.ValidationError('Avatar size must be 2MB or less.')
+
+        allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+        ext = avatar.name.rsplit('.', 1)[-1].lower() if '.' in avatar.name else ''
+        if f'.{ext}' not in allowed_extensions:
+            raise forms.ValidationError('Allowed formats: JPG, PNG, GIF, WEBP.')
+
+        return avatar
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -60,3 +75,12 @@ class ProfileForm(forms.ModelForm):
         if User.objects.filter(email__iexact=email).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError('A user with this email already exists.')
         return email
+
+    def save(self, commit=True):
+        user = super().save(commit=commit)
+        profile, _ = Profile.objects.get_or_create(user=user)
+        avatar = self.cleaned_data.get('avatar')
+        if avatar:
+            profile.avatar = avatar
+            profile.save(update_fields=['avatar'])
+        return user

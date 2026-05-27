@@ -79,7 +79,7 @@ class Command(BaseCommand):
             User.objects.bulk_create(batch, batch_size=batch_size)
 
         new_user_ids = list(User.objects.filter(username__startswith=prefix).values_list('id', flat=True))
-        profile_batch = [Profile(user_id=user_id, avatar='img/Kris_sprite.png') for user_id in new_user_ids]
+        profile_batch = [Profile(user_id=user_id) for user_id in new_user_ids]
         Profile.objects.bulk_create(profile_batch, batch_size=batch_size, ignore_conflicts=True)
 
     def _create_tags(self, faker, amount, prefix, batch_size=5000):
